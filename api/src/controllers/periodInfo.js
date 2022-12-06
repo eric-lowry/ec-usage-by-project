@@ -1,7 +1,8 @@
-const fetchAPI = require('../lib/fetchAPI');
+const fetchCosts = require('../lib/fetchCosts');
+const fetchDeploymentCosts = require('../lib/fetchDeploymentCosts');
+const fetchDeploymentDetails = require('../lib/fetchDeploymentDetails');
 const orgInfo = require('../middlewares/orgInfo');
 const debug = require('debug')('api:periodInfo');
-const { EC_TAG_NAME } = require('../lib/config');
 
 const defaultDateRange = () => {
   const today = new Date();
@@ -10,54 +11,8 @@ const defaultDateRange = () => {
   const dom = today.getDate().toString().padStart(2, '0');
   const fromDate = year + '-' + month + '-01';
   const toDate = year + '-' + month + '-' + dom;
-
   return [fromDate, toDate];
 };
-
-const fetchCosts = (orgID, fromDate, toDate) => {
-  const uri =
-    fromDate && toDate
-      ? `/api/v1/billing/costs/${orgID}?from=${fromDate}&to=${toDate}` // period range
-      : `/api/v1/billing/costs/${orgID}`; // current period
-  return fetchAPI(uri).then(json => ({
-    hourly_rate: json.hourly_rate,
-    total_costs: json.costs.total,
-  }));
-};
-
-//
-// fetchCurrentCosts(id,from,to) - returns a promise for the org's current period's high level costs
-//
-const fetchCurrentCosts = (orgID, fromDate, toDate) =>
-  fetchAPI(`/api/v1/billing/costs/${orgID}?from=${fromDate}&to=${toDate}`).then(
-    json => ({
-      total_hourly_rate: json.hourly_rate,
-      total_costs: json.costs.total,
-    })
-  );
-
-const fetchDeploymentCosts = (orgID, fromDate, toDate) =>
-  fetchAPI(
-    `/api/v1/billing/costs/${orgID}/deployments?from=${fromDate}&to=${toDate}`
-  );
-
-//
-// fetchDeploymentDetails(id) - returns a promose for a deployments important meta-data
-//
-const fetchDeploymentDetails = deploymentID =>
-  fetchAPI(`/api/v1/deployments/${deploymentID}`).then(json => {
-    const matchingTag = json.metadata.tags.find(tag => tag.key === EC_TAG_NAME);
-    return {
-      id: json.id,
-      name: json.name,
-      tag: matchingTag?.value || 'not-tagged',
-      state: json.metadata.hidden
-        ? 'hidden'
-        : json.healthy
-        ? 'healthy'
-        : 'unhealthy',
-    };
-  });
 
 //
 // periodInfo() Controller
@@ -92,12 +47,27 @@ const periodInfo = [
 
     const deploymentCosts = await fetchDeploymentCosts(orgID, fromDate, toDate);
 
-    // get the details for every deployment in this billing cycle
-    const currentDeployments = await Promise.all(
+    // get the details for every deployment in this billing cycle,
+    // including decomissioned deployments
+    const deploymentDetails = await Promise.all(
       deploymentCosts.deployments.map(deployment => {
         return fetchDeploymentDetails(deployment.deployment_id);
       })
     );
+
+    const deployments = deploymentCosts.deployments.map(deployment => {
+
+      const detail = deploymentDetails.find( detail => detail.id === deployment.deployment_id);
+
+      return {
+        id: deployment.deployment_id,
+        name: deployment.deployment_name,
+        state: detail.state,
+        tag: detail.tag,
+        costs: deployment.costs.total,
+        rate: deployment.hourly_rate,
+      };
+    }).sort( (a,b) => b.costs - a.costs);
 
     res.json({
       orgID,
@@ -106,9 +76,9 @@ const periodInfo = [
       toDate,
       hourlyRate,
       totalCosts,
-      deploymentCosts,
-      currentDeployments
+      deployments
     });
+
   },
 ];
 

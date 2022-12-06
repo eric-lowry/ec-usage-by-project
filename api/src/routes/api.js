@@ -4,6 +4,7 @@ const { version: pkgVersion } = require('../../package.json');
 // const fetchAPI = require('../lib/fetchAPI');
 const orgInfo = require('../middlewares/orgInfo');
 const periodInfo = require('../controllers/periodInfo');
+const csvFile = require('../controllers/csvFile');
 
 //
 // GET /api/version
@@ -25,5 +26,7 @@ router.get('/org-info', orgInfo, function (req, res, next) {
 });
 
 router.get('/period-info', periodInfo);
+
+router.get('/csv/:fromDate/:toDate/ec-billing-export.csv', csvFile);
 
 module.exports = router;
