@@ -52,11 +52,11 @@ const csvFile = [
         `attachment; filename=ec-usage-${fromDate}-to-${toDate}.csv`
       )
       .send(
-        `"id","name","state","tag","rate","costs"\n` +
+        `"deployment_id","name","state","tag","rate","costs"\n` +
           deployments
             .map(
               ({ id, name, state, tag, rate, costs }) =>
-                `"${deployment_id}","${name}","${state}","${tag}",${rate},${costs}`
+                `"${id}","${name}","${state}","${tag}",${rate},${costs}`
             )
             .join('\n')
       );
