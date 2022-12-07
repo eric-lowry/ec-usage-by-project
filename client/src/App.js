@@ -11,11 +11,7 @@ import Error from './components/Error';
 
 import fetchAPI from './lib/fetchAPI';
 
-import {
-  useQuery,
-  // useMutation,
-  // useQueryClient,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const API_HOST = process.env.REACT_APP_API_HOST || '';
 
@@ -59,7 +55,7 @@ function App() {
   });
 
   if (isLoading) return <Loading />;
-  
+
   if (error)
     return (
       <Error
@@ -69,10 +65,12 @@ function App() {
     );
 
   const tagTotals = {};
+  let usageTotal = 0;
   for (let i = 0; i < data.deployments.length; i++) {
     const deployment = data.deployments[i];
     tagTotals[deployment.tag] =
       (tagTotals[deployment.tag] || 0) + deployment.costs;
+    usageTotal = usageTotal + deployment.costs;
   }
 
   const tagOrder = Object.keys(tagTotals).sort(
@@ -84,7 +82,7 @@ function App() {
       <NavBar />
       <Container>
         <Row className="mt-3">
-          <h1>Billing by project</h1>
+          <h1>Usage by project</h1>
         </Row>
         <Row className="mt-3">
           <Col>
@@ -178,7 +176,7 @@ function App() {
                 <tfoot>
                   <tr>
                     <th colSpan="2">Total</th>
-                    <th className="text-end">${data.totalCosts.toFixed(2)}</th>
+                    <th className="text-end">${usageTotal.toFixed(2)}</th>
                   </tr>
                 </tfoot>
               </table>
@@ -189,7 +187,7 @@ function App() {
           <div className="mb-5 d-flex flex-row-reverse">
             <a
               className="btn btn-primary btn-lg"
-              href={`${API_HOST}/api/csv/${period.fromDate}/${period.toDate}/ec-billing-export.csv`}
+              href={`${API_HOST}/api/csv/${period.fromDate}/${period.toDate}/ec-usage-export.csv`}
               download
             >
               Export to CSV

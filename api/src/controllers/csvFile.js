@@ -49,14 +49,14 @@ const csvFile = [
       .header('Content-type', 'application/csv')
       .header(
         'Content-disposition',
-        `attachment; filename=ec-billing-${fromDate}-to-${toDate}.csv`
+        `attachment; filename=ec-usage-${fromDate}-to-${toDate}.csv`
       )
       .send(
         `"id","name","state","tag","rate","costs"\n` +
           deployments
             .map(
               ({ id, name, state, tag, rate, costs }) =>
-                `"${id}","${name}","${state}","${tag}",${rate},${costs}`
+                `"${deployment_id}","${name}","${state}","${tag}",${rate},${costs}`
             )
             .join('\n')
       );

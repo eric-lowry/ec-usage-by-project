@@ -21,8 +21,10 @@ RUN npm install
 COPY ./api/src ./src
 COPY ./api/bin ./bin
 
+ENV PORT=80
+ENV EC_TAG_NAME="project"
 ENV CLIENT_PATH="/opt/client/build"
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD [ "node", "./bin/www" ]

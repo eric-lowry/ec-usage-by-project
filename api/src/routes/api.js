@@ -27,6 +27,6 @@ router.get('/org-info', orgInfo, function (req, res, next) {
 
 router.get('/period-info', periodInfo);
 
-router.get('/csv/:fromDate/:toDate/ec-billing-export.csv', csvFile);
+router.get('/csv/:fromDate/:toDate/ec-usage-export.csv', csvFile);
 
 module.exports = router;

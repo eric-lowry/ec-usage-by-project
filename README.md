@@ -10,11 +10,11 @@ Elastic Cloud Usage by Project Reports
 `cd ec-usage-by-project`
 `docker build --tag ec-usage-by-project:latest .`
 
-4. Run the image in a container
+4. Run the image in a container (named "ec-usage")
 `export EC_API_KEY="...your-ec-api-key..."`
-`docker run --publish 80:3000 --env EC_API_KEY --rm --name ec-usage --detach ec-usage-by-project:latest`
+`docker run --publish 80:80 --env EC_API_KEY --rm --name ec-usage --detach ec-usage-by-project:latest`
 
 5. To access the usage report, open http://127.0.0.1 in your web browser
 
-6. To shutdown, just kill the container
+6. To shutdown, kill the container
 `docker kill ec-usage`
