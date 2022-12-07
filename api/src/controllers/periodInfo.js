@@ -26,24 +26,8 @@ const periodInfo = [
     const fromDate = req.query.from || defaultFromDate;
     const toDate = req.query.to || defaultToDate;
 
-    const currentPeriod = !(req.query.from && req.query.to);
-
-    let hourlyRate;
-    let totalCosts;
-
-    if (currentPeriod) {
-      const { hourly_rate, total_costs } = await fetchCosts(orgID);
-      hourlyRate = hourly_rate;
-      totalCosts = total_costs;
-    } else {
-      const { hourly_rate, total_costs } = await fetchCosts(
-        orgID,
-        fromDate,
-        toDate
-      );
-      hourlyRate = hourly_rate;
-      totalCosts = total_costs;
-    }
+    const { hourly_rate: hourlyRate, total_costs: totalCosts } =
+      await fetchCosts(orgID);
 
     const deploymentCosts = await fetchDeploymentCosts(orgID, fromDate, toDate);
 
@@ -55,19 +39,22 @@ const periodInfo = [
       })
     );
 
-    const deployments = deploymentCosts.deployments.map(deployment => {
+    const deployments = deploymentCosts.deployments
+      .map(deployment => {
+        const detail = deploymentDetails.find(
+          detail => detail.id === deployment.deployment_id
+        );
 
-      const detail = deploymentDetails.find( detail => detail.id === deployment.deployment_id);
-
-      return {
-        id: deployment.deployment_id,
-        name: deployment.deployment_name,
-        state: detail.state,
-        tag: detail.tag,
-        costs: deployment.costs.total,
-        rate: deployment.hourly_rate,
-      };
-    }).sort( (a,b) => b.costs - a.costs);
+        return {
+          id: deployment.deployment_id,
+          name: deployment.deployment_name,
+          state: detail.state,
+          tag: detail.tag,
+          costs: deployment.costs.total,
+          rate: deployment.hourly_rate,
+        };
+      })
+      .sort((a, b) => b.costs - a.costs);
 
     res.json({
       orgID,
@@ -76,9 +63,8 @@ const periodInfo = [
       toDate,
       hourlyRate,
       totalCosts,
-      deployments
+      deployments,
     });
-
   },
 ];
 
