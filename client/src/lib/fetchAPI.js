@@ -1,4 +1,5 @@
-import { handleHttpErrors } from 'fetch-http-errors';
+
+import createError from 'http-errors';
 
 const API_HOST = process.env.REACT_APP_API_HOST || '';
 
@@ -10,9 +11,9 @@ const fetchAPI = (uri, opts = {}) =>
     },
     ...opts,
   })
-    .then(handleHttpErrors)
-    .then(res => {
-      return res.json();
+    .then(req => {
+      if (!req.ok) throw createError(req.status,req.statusText);
+      return req.json();
     });
 
 export default fetchAPI;

@@ -24,7 +24,7 @@ const periods = [];
 const today = new Date();
 const date = new Date(today.getFullYear(), today.getMonth(), 1); // first day of month
 
-for (let i = 0; i < 18; i++) {
+for (let i = 0; i < 13; i++) {
   const d = new Date(new Date(date).setMonth(date.getMonth() - i));
   const fromDate = d.toISOString().split('T')[0];
   if (i) {

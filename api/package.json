@@ -1,21 +1,23 @@
 {
   "name": "api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
     "debug": "DEBUG=api:* PORT=4000 nodemon ./bin/www"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "dotenv": "^16.0.3",
-    "express": "~4.16.1",
+    "cookie-parser": "1.4.6",
+    "cors": "2.8.5",
+    "debug": "4.3.4",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
     "fetch-http-errors": "github:ericlowry/fetch-http-errors",
-    "http-errors": "~1.6.3",
+    "http-errors": "1.6.3",
     "morgan": "~1.9.1",
-    "node-fetch": "^2.6.7",
-    "nodemon": "^2.0.20"
+    "node-fetch": "2.6.7"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.20"
   }
 }
