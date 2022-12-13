@@ -7,7 +7,7 @@ const cors = require('cors');
 const debug = require('debug')('api:app');
 
 require('dotenv').config({ path: __dirname + '/../.env' });
-const { EC_API_KEY, CLIENT_PATH } = require('./lib/config');
+const { EC_API_KEY, CLIENT_PATH } = require('./config');
 assert(EC_API_KEY, 'no EC_API_KEY in environment');
 
 if (CLIENT_PATH) {
@@ -16,8 +16,10 @@ if (CLIENT_PATH) {
 
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
+const authRouter = require('./routes/auth');
 
 const app = express();
+require('express-async-errors');
 
 app.use(cors());
 
@@ -33,24 +35,29 @@ if (CLIENT_PATH) {
 app.use('/', indexRouter);
 
 app.use('/api', apiRouter);
+app.use('/auth', authRouter);
 
 if (CLIENT_PATH) {
-  app.use('*', (req,res) =>{
-    res.sendFile( path.join(CLIENT_PATH, "index.html"));
-  })
-} else {
-// 404 error
-app.use((req, res, next) => {
-  res.status(404).json({
-    message: 'resource not found',
+  app.use('*', (req, res) => {
+    res.sendFile(path.join(CLIENT_PATH, 'index.html'));
   });
-});
+} else {
+  // 404 error
+  app.use((req, res, next) => {
+    res.status(404).json({
+      message: 'resource not found',
+    });
+  });
 }
 
-// other errors
+// global error handler (will catch exceptions)
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send('Something Broke!');
+  const status = err.status || 500;
+  if (status === 500) console.error(err);
+  res.status(status).send({
+    error: err.message,
+    status,
+  });
 });
 
 module.exports = app;

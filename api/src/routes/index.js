@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { CLIENT_PATH } = require('../lib/config');
+const { CLIENT_PATH } = require('../config');
 
 const badProxyHtml = `<!DOCTYPE html>
 <html lang="en">

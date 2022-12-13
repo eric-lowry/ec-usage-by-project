@@ -1,5 +1,5 @@
 const fetchAPI = require('./fetchAPI');
-const { EC_TAG_NAME } = require('./config');
+const { EC_TAG_NAME } = require('../config');
 
 //
 // fetchDeploymentDetails(id) - returns a promose for a deployments important meta-data

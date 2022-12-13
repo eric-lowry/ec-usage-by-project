@@ -2,8 +2,7 @@ const fetchAPI = require('../lib/fetchAPI');
 const fetchDeploymentCosts = require('../lib/fetchDeploymentCosts');
 const fetchDeploymentDetails = require('../lib/fetchDeploymentDetails');
 const orgInfo = require('../middlewares/orgInfo');
-const debug = require('debug')('api:csvFile');
-const { EC_TAG_NAME } = require('../lib/config');
+//const debug = require('debug')('api:csvFile');
 
 //
 // csvFile() Controller

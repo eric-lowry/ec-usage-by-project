@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
-const { handleHttpErrors } = require('fetch-http-errors');
-const { EC_API_URL, EC_API_KEY } = require('./config');
+const createError = require('http-errors');
+const { EC_API_URL, EC_API_KEY } = require('../config');
+
 
 //
 // fetch(API)
@@ -16,8 +17,8 @@ const fetchAPI = (uri, opts = {}) =>
     },
     ...opts,
   })
-    .then(handleHttpErrors)
     .then(res => {
+      if (!res.ok) throw createError(res.status,res.statusText);
       return res.json();
     });
 
