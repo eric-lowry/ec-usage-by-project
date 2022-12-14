@@ -21,7 +21,7 @@ export default function Login({ onLogin, loginError }) {
         <Row className="mt-5">
           <Col className=""></Col>
           <Col>
-            <div className="p-3 rounded-3 border shadow-sm">
+            <div className="mt-5 p-3 rounded-3 border shadow-sm">
               <h4>Login</h4>
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mt-4">
@@ -50,6 +50,16 @@ export default function Login({ onLogin, loginError }) {
             </div>
           </Col>
           <Col></Col>
+        </Row>
+        <Row>
+          <Col />
+          <Col>
+            <div className='mt-4'>
+              <strong>Notice:</strong> This usage report is not a supported Elastic product. If
+              you need help, please contact your Elastic Cloud administrator.
+            </div>
+          </Col>
+          <Col />
         </Row>
       </Container>
     </>

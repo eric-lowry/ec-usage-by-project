@@ -1,7 +1,7 @@
 const express = require('express');
 const createHttpError = require('http-errors');
 const jwt = require('jsonwebtoken');
-//const debug = require('debug')('api:auth');
+const debug = require('debug')('api:auth');
 
 const router = express.Router();
 
@@ -18,8 +18,8 @@ const {
 const development = process.env.NODE_ENV === 'development';
 
 const SESSION_COOKIE_BASE_OPTS = {
-  sameSite: development ? 'lax' : 'strict',
-  httpOnly: development ? false : true,
+  sameSite: 'lax', // development ? 'lax' : 'strict',
+  httpOnly: false, // development ? false : true,
   secure: false,
   path: '/',
 };
@@ -43,6 +43,7 @@ function makeToken(sub, duration, props = {}) {
 //
 router.get('/session', function (req, res, next) {
   const sessionToken = req.cookies[SESSION_COOKIE_NAME];
+  debug(`sessionToken: ${sessionToken}`);
   let session;
   try {
     session = jwt.verify(sessionToken, AUTH_SECRET);

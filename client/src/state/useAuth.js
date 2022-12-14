@@ -4,6 +4,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import handleFetchResponse from '../lib/handleFetchResponse';
 import fetchOptions from '../lib/fetchOptions';
+import fetchSession from '../lib/fetchSession';
 
 const AUTH_HOST = process.env.REACT_APP_AUTH_HOST || process.env.REACT_APP_API_HOST || '';
 
@@ -21,8 +22,7 @@ export const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState();
 
   useEffect(() => {
-    fetch(`${AUTH_HOST}/auth/session`, fetchOptions())
-      .then(handleFetchResponse)
+    fetchSession()
       .then(data => {
         // console.log(data);
         sessionStorage.setItem('accessToken', data.token);

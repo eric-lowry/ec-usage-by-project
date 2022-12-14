@@ -13,6 +13,7 @@ import Error from './Error';
 import fetchAPI from '../lib/fetchAPI';
 
 import { useQuery } from '@tanstack/react-query';
+import fetchSession from '../lib/fetchSession';
 
 const API_HOST = process.env.REACT_APP_API_HOST || '';
 
@@ -53,7 +54,7 @@ function UsageReport({ onLogout }) {
     queryKey: ['period-info', period.fromDate, period.toDate],
     queryFn: () =>
       fetchAPI(`/api/period-info?from=${period.fromDate}&to=${period.toDate}`),
-      refetchOnWindowFocus: false,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) return <Loading />;
@@ -84,13 +85,21 @@ function UsageReport({ onLogout }) {
     onLogout();
   };
 
+  const handleDownload = ev => {
+    ev.preventDefault();
+    // generate a fresh access token for the download request (just in case)
+    fetchSession().then(json => {
+      window.location = `${API_HOST}/api/csv/${period.fromDate}/${period.toDate}/ec-usage-export.csv?authorization=${json.token}`;
+    });
+  };
+
   return (
     <div>
       <NavBar />
       <Container>
         <Row>
           <div className="mt-3 d-flex flex-row-reverse">
-            <Button size='sm' onClick={handleLogout}>
+            <Button size="sm" onClick={handleLogout}>
               Logout
             </Button>
           </div>
@@ -199,13 +208,7 @@ function UsageReport({ onLogout }) {
         </Row>
         <Row>
           <div className="mb-5 d-flex flex-row-reverse">
-            <a
-              className="btn btn-primary btn-lg"
-              href={`${API_HOST}/api/csv/${period.fromDate}/${period.toDate}/ec-usage-export.csv?authorization=${sessionStorage.getItem('accessToken')}`}
-              download
-            >
-              Export to CSV
-            </a>
+            <Button size="lg" onClick={handleDownload}>Export to CSV</Button>
           </div>
         </Row>
       </Container>
