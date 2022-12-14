@@ -201,7 +201,7 @@ function UsageReport({ onLogout }) {
           <div className="mb-5 d-flex flex-row-reverse">
             <a
               className="btn btn-primary btn-lg"
-              href={`${API_HOST}/api/csv/${period.fromDate}/${period.toDate}/ec-usage-export.csv`}
+              href={`${API_HOST}/api/csv/${period.fromDate}/${period.toDate}/ec-usage-export.csv?authorization=${sessionStorage.getItem('accessToken')}`}
               download
             >
               Export to CSV

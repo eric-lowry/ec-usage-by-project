@@ -20,7 +20,7 @@ COPY ./api/package-lock.json .
 
 RUN npm install
 
-COPY --from=ec-usage-by-project-client /opt/client/build ./api/public
+COPY --from=ec-usage-by-project-client /opt/client/build /opt/api/public
 COPY ./api/src ./src
 COPY ./api/bin ./bin
 

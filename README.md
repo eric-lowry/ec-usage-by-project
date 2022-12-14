@@ -21,7 +21,9 @@ Note: _Untagged deployments will show up in an "Untagged" section of the report.
 
 ```bash
 export EC_API_KEY="...your-ec-api-key..."
-docker run --publish 80:8080 --env EC_API_KEY --rm --name ec-usage --detach gcr.io/elastic-sa/ec-usage-by-project:latest
+export ADMIN_USER_NAME="elastic"
+export ADMIN_PASSWORD="...password..."
+docker run --publish 80:8080 --env EC_API_KEY,ADMIN_USER_NAME,ADMIN_PASSWORD --rm --name ec-usage --detach gcr.io/elastic-sa/ec-usage-by-project:latest
 ```
 2. To access the usage report, open http://127.0.0.1 in your web browser
 
@@ -49,7 +51,9 @@ docker build --tag ec-usage-by-project:latest .
 
 ```bash
 export EC_API_KEY="...your-ec-api-key..."
-docker run --publish 80:8080 --env EC_API_KEY --rm --name ec-usage --detach ec-usage-by-project:latest
+export ADMIN_USER_NAME="elastic"
+export ADMIN_PASSWORD="...password..."
+docker run --publish 80:8080 --env EC_API_KEY,ADMIN_USER_NAME,ADMIN_PASSWORD --rm --name ec-usage --detach ec-usage-by-project:latest
 ```
 
 4. To access the usage report, open http://127.0.0.1 in your web browser
