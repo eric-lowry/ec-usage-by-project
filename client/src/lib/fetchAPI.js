@@ -4,8 +4,6 @@ import handleFetchResponse from './handleFetchResponse';
 import fetchSession from './fetchSession';
 
 const API_HOST = process.env.REACT_APP_API_HOST || '';
-const AUTH_HOST =
-  process.env.REACT_APP_AUTH_HOST || process.env.REACT_APP_API_HOST;
 
 const fetchAPI = (uri, opts = {}) => {
   const _opts = fetchOptions({

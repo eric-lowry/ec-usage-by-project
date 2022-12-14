@@ -21,10 +21,10 @@ require('express-async-errors');
 app.use(
   cors({
     // use a cors "dynamic origin"
-    //origin: function (origin, callback) {
-    //  callback(undefined, origin);
-    //},
-    origin: "http://127.0.0.1:3000",
+    origin: function (origin, callback) {
+      callback(undefined, origin);
+    },
+    // origin: "http://127.0.0.1:3000",
     credentials: true,
   })
 );
