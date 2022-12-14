@@ -6,7 +6,7 @@ const { EC_TAG_NAME } = require('../config');
 //
 const fetchDeploymentDetails = deploymentID =>
   fetchAPI(`/api/v1/deployments/${deploymentID}`).then(json => {
-    const matchingTag = json.metadata.tags.find(tag => tag.key === EC_TAG_NAME);
+    const matchingTag = (json.metadata.tags || []).find(tag => tag.key === EC_TAG_NAME);
     return {
       id: json.id,
       name: json.name,
