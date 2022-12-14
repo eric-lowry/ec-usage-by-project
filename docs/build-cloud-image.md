@@ -23,7 +23,7 @@ docker build --tag $IMAGE:latest --tag $PUBLIC_IMAGE:latest --tag $PUBLIC_IMAGE:
  
 3. Push the image to gcr.io
 ```bash
-docker push --all-tags $PUBLIC_IMAGE:latest
+docker push --all-tags $PUBLIC_IMAGE
 # ...or push them one at a time...
 docker push $PUBLIC_IMAGE:latest
 docker push $PUBLIC_IMAGE:$VERSION
