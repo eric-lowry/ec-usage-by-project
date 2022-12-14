@@ -89,4 +89,10 @@ router.post('/logout', function (req, res, next) {
   res.json({ message: 'you have been logged out.' });
 });
 
+router.use((req, res, next) => {
+  res.status(404).json({
+    message: 'auth resource not found',
+  });
+});
+
 module.exports = router;

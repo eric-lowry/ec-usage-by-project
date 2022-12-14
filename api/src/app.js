@@ -7,48 +7,47 @@ const cors = require('cors');
 const debug = require('debug')('api:app');
 
 require('dotenv').config({ path: __dirname + '/../.env' });
-const { EC_API_KEY, CLIENT_PATH } = require('./config');
+
+const { EC_API_KEY } = require('./config');
+
 assert(EC_API_KEY, 'no EC_API_KEY in environment');
 
-if (CLIENT_PATH) {
-  debug(`serving client from ${CLIENT_PATH}`);
-}
-
-const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const authRouter = require('./routes/auth');
 
 const app = express();
 require('express-async-errors');
 
-app.use(cors());
+app.use(
+  cors({
+    // use a cors "dynamic origin"
+    origin: function (origin, callback) {
+      callback(undefined, origin);
+    },
+    credentials: true,
+  })
+);
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-if (CLIENT_PATH) {
-  app.use(express.static(CLIENT_PATH));
-}
-
-app.use('/', indexRouter);
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 
-if (CLIENT_PATH) {
-  app.use('*', (req, res) => {
-    res.sendFile(path.join(CLIENT_PATH, 'index.html'));
+app.use('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
+// 404 error - //todo figure out how to serve
+app.use((req, res, next) => {
+  res.status(404).json({
+    message: 'resource not found',
   });
-} else {
-  // 404 error
-  app.use((req, res, next) => {
-    res.status(404).json({
-      message: 'resource not found',
-    });
-  });
-}
+});
 
 // global error handler (will catch exceptions)
 app.use((err, req, res, next) => {
