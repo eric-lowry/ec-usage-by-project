@@ -13,7 +13,37 @@ in the [Elastic Cloud](https://cloud.elastic.co) console.
 * Create an [API Key](https://cloud.elastic.co/deployment-features/keys) for use by the report.
 * Tag your each of your deployments with a "project" key and name pair.
 
-Note: _Untagged deployments will show up in an "Untagged" section of the report._
+Note: _Untagged deployments will show up in an "un-tagged" section of the report._
+
+## To deploy the report on Google Cloud, using cloud run
+
+1. From the google cloud shell terminal
+```bash
+export SERVICE="ec-usage-by-project"
+export EC_API_KEY="...your-ec-api-key..."
+export ADMIN_USER_NAME="elastic"
+export ADMIN_PASSWORD="...password..."
+export REGION="us-central1"
+# Optional for Cloud Shell Terminal
+export GOOGLE_CLOUD_PROJECT="elastic-sa"
+
+gcloud run deploy $SERVICE \
+--image=gcr.io/elastic-sa/ec-usage-by-project:latest \
+--allow-unauthenticated \
+--max-instances=5 \
+--set-env-vars=EC_API_KEY="$EC_API_KEY",ADMIN_USER_NAME="$ADMIN_USER_NAME",ADMIN_PASSWORD="$ADMIN_PASSWORD" \
+--region=$REGION \
+--project=$GOOGLE_CLOUD_PROJECT \
+--format=json > /tmp/last-deploy.json
+# optional, but helpful
+export SERVICE_ID=`jq -r .metadata.uid /tmp/last-deploy.json`
+export SERVICE_URL=`jq -r .status.url /tmp/last-deploy.json`
+```
+
+2. To destroy the published service
+```bash
+gcloud run services delete --region $REGION $SERVICE
+```
 
 ## To run the report using the public container
 
