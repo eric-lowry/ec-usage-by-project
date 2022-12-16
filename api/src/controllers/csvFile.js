@@ -1,4 +1,3 @@
-const fetchAPI = require('../lib/fetchAPI');
 const fetchDeploymentCosts = require('../lib/fetchDeploymentCosts');
 const fetchDeploymentDetails = require('../lib/fetchDeploymentDetails');
 const orgInfo = require('../middlewares/orgInfo');
