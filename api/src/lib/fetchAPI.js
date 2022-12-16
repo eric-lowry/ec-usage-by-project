@@ -2,7 +2,6 @@ const fetch = require('node-fetch');
 const createError = require('http-errors');
 const { EC_API_URL, EC_API_KEY } = require('../config');
 
-
 //
 // fetch(API)
 //

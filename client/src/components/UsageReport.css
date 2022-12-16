@@ -1,0 +1,8 @@
+
+.edit-tag {
+    display: none;
+}
+
+tr:hover .edit-tag {
+    display: inline;
+}

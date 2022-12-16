@@ -9,11 +9,14 @@ import Button from 'react-bootstrap/Button';
 import NavBar from './NavBar';
 import Loading from './Loading';
 import Error from './Error';
-
-import fetchAPI from '../lib/fetchAPI';
+import EditTag from './EditTag';
 
 import { useQuery } from '@tanstack/react-query';
+
+import fetchAPI from '../lib/fetchAPI';
 import fetchSession from '../lib/fetchSession';
+
+import "./UsageReport.css";
 
 const API_HOST = process.env.REACT_APP_API_HOST || '';
 
@@ -49,6 +52,7 @@ for (let i = 0; i < 13; i++) {
 
 function UsageReport({ onLogout }) {
   const [periodIndex, setPeriodIndex] = useState(0);
+  const [deploymentModal, setDeploymentModal] = useState();
   const period = periods[periodIndex];
   const { isLoading, error, data } = useQuery({
     queryKey: ['period-info', period.fromDate, period.toDate],
@@ -91,6 +95,16 @@ function UsageReport({ onLogout }) {
     fetchSession().then(json => {
       window.location = `${API_HOST}/api/csv/${period.fromDate}/${period.toDate}/ec-usage-export.csv?authorization=${json.token}`;
     });
+  };
+
+  const handleTag = deployment => ev => {
+    ev.preventDefault();
+    setDeploymentModal(deployment);
+    //console.log(deploymentId);
+    //fetchAPI(`/api/tag/${deploymentId}`, {
+    //  method: 'PUT',
+    //  body: { tag: 'xxx' },
+    //});
   };
 
   return (
@@ -151,7 +165,7 @@ function UsageReport({ onLogout }) {
                   ))}
                 </Form.Select>
               </Form.Group>
-              <table className="table mt-3">
+              <table className="table mt-3 table-hover">
                 <thead>
                   <tr>
                     <th scope="col"></th>
@@ -176,8 +190,11 @@ function UsageReport({ onLogout }) {
                             <div className="ms-3">
                               {deployment.name}
                               {deployment.state === 'hidden'
-                                ? ' (deleted)'
-                                : ''}
+                                ? ' (deleted) '
+                                : ' '}
+                              <a href="#" className="edit-tag" onClick={handleTag(deployment)}>
+                                Edit
+                              </a>
                             </div>
                           </td>
                           <td className="text-end">
@@ -208,10 +225,16 @@ function UsageReport({ onLogout }) {
         </Row>
         <Row>
           <div className="mb-5 d-flex flex-row-reverse">
-            <Button size="lg" onClick={handleDownload}>Export to CSV</Button>
+            <Button size="lg" onClick={handleDownload}>
+              Export to CSV
+            </Button>
           </div>
         </Row>
       </Container>
+      <EditTag
+        deployment={deploymentModal}
+        onClose={() => setDeploymentModal()}
+      />
     </div>
   );
 }

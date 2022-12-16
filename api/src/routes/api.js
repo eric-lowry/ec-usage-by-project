@@ -4,6 +4,7 @@ const { version: pkgVersion } = require('../../package.json');
 const orgInfo = require('../middlewares/orgInfo');
 const periodInfo = require('../controllers/periodInfo');
 const csvFile = require('../controllers/csvFile');
+const tagDeployment = require('../controllers/tagDeployment');
 
 const isAuth = require('../middlewares/isAuth');
 
@@ -29,6 +30,8 @@ router.get('/org-info', isAuth, orgInfo, function (req, res, next) {
 router.get('/period-info', isAuth, periodInfo);
 
 router.get('/csv/:fromDate/:toDate/ec-usage-export.csv', isAuth, csvFile);
+
+router.put('/tag/:deploymentId', isAuth, tagDeployment);
 
 router.use((req, res, next) => {
   res.status(404).json({
